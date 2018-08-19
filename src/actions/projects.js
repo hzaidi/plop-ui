@@ -34,5 +34,6 @@ export function selectProject(project) {
 function extractFolderName(path){
 	let regex = /.*\/(.*)\/plopfile.js/;
 	let found = path.match(regex);
+	if(!found) { return 'dummyFolder' }
 	return found[1];
 }
