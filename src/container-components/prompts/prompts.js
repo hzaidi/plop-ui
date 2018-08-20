@@ -83,18 +83,24 @@ class Prompts extends Component {
 				</div>
 				{
 					generator &&
-					<div>
-						<Typography align="left" variant="title" color="primary" noWrap gutterBottom={ true }>{ generator.name }</Typography>
-						<Typography align="left" variant="caption" color="textSecondary" noWrap gutterBottom={ true }>{ generator.description }</Typography>
-						{
-							generator.prompts.map((prompt, index) => {
-								const ComponentToRender = this.selectComponent(prompt);
-								return <div className={ classes.promptItem } key={ index }><ComponentToRender {...prompt} setAnswers={ this.setAnswers.bind(this) }/></div>
-							})
-						}
-						<Button color="primary" className={classes.button} onClick={ this.onGenerateButtonClick.bind(this) }>
-							Generate File
-						</Button>
+					<div className={ classes.promptContentContainer }>
+						<div>
+							<Typography align="left" variant="title" color="primary" noWrap gutterBottom={ true }>{ generator.name }</Typography>
+							<Typography align="left" variant="caption" color="textSecondary" noWrap gutterBottom={ true }>{ generator.description }</Typography>
+						</div>
+						<div>
+							{
+								generator.prompts.map((prompt, index) => {
+									const ComponentToRender = this.selectComponent(prompt);
+									return <div className={ classes.promptItem } key={ index }><ComponentToRender {...prompt} setAnswers={ this.setAnswers.bind(this) }/></div>
+								})
+							}
+						</div>
+						<div>
+							<Button color="primary" className={classes.button} onClick={ this.onGenerateButtonClick.bind(this) }>
+								Generate File
+							</Button>
+						</div>
 					</div>
 				}
 			</div>

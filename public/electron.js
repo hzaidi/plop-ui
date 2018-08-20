@@ -143,6 +143,20 @@ ipcMain.on('default-prompt', (event, arg) => {
 	});
 })
 
+ipcMain.on('transform-prompt', (event, arg) => {
+	co(function*(){
+		const { project, generatorName, promptName } = arg;
+		const plop = nodePlop(project.path);
+		const generator = plop.getGenerator(generatorName);
+		const prompt = generator.prompts.find(prompt => prompt.name === promptName);
+		let transformedVal = null;
+		if(prompt.transformer) {
+			transformedVal = prompt.transformer();
+		}
+		event.sender.send('transform-prompt-result', transformedVal);
+	});
+})
+
 
 
 

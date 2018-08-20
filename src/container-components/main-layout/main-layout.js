@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
 
 import { addProject, loadProjects, selectProject } from '../../actions/projects';
+import { resetSelectedGenerator } from '../../actions/generators';
 import Banner from '../../presentation-components/banner/banner';
 import SideBar from '../../presentation-components/side-bar/side-bar';
 import Content from '../../container-components/content/content';
@@ -39,7 +40,8 @@ class MainLayout extends Component {
 	}
 
 	selectProject(project){
-		const { selectProject } = this.props;
+		const { selectProject, resetSelectedGenerator } = this.props;
+		resetSelectedGenerator();
 		selectProject(project);
 	}
 
@@ -68,7 +70,8 @@ const mapStateToProps = (state, props) => {
 const mapActionsToProp = {
 	addProject,
 	loadProjects,
-	selectProject
+	selectProject,
+	resetSelectedGenerator
 }
 
 export default compose(
