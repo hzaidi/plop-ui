@@ -19,19 +19,19 @@ class Content extends Component {
 	}
 	onGeneratorClick(name) {
 		const { loadGenerator, projectsState } = this.props;
-		const { selectedProject } = projectsState;
+		const { selectedProject } = projectsState;		
 		loadGenerator(selectedProject, name);
 	}
 
-  	render() {
+  	render() {		
 		const { projectsState, generatorsState } = this.props;
 		const { selectedProject } = projectsState;
-		const { generators } = generatorsState;
+		const { generators, generator } = generatorsState;
 		return (
 			<div>
 				<ProjectHeader project={ selectedProject }/>
-				{ generators && <GeneratorList generators={ generators } onGeneratorClick={ this.onGeneratorClick.bind(this) }/> }
-				<Prompts />
+				{ !generator && generators && <GeneratorList generators={ generators } onGeneratorClick={ this.onGeneratorClick.bind(this) }/> }
+				{ generator && <Prompts /> }
 			</div>
 		);
   	}

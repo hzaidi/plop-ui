@@ -1,6 +1,7 @@
 import {
 	LOAD_GENERATORS,
-	LOAD_GENERATOR
+	LOAD_GENERATOR,
+	RESET_GENERATOR
 } from '../actions/generators'
 
 const initialState = {
@@ -14,6 +15,8 @@ export default function(state = initialState, { type, payload }) {
 			return { ...state, generators: payload };
 		case LOAD_GENERATOR:
 			return { ...state, generator: payload };
+		case RESET_GENERATOR:
+			return { ...state, generator: null };
 		default:
 			return state;
 	}

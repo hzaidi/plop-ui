@@ -1,6 +1,7 @@
 export const LOAD_GENERATORS = 'Generators: Load';
 export const SELECT_GENERATOR = 'Generator: Select';
 export const LOAD_GENERATOR = 'Generator: Load';
+export const RESET_GENERATOR = 'Generator: Reset';
 
 const { ipcRenderer } = window.require('electron');
 export function loadGenerators(project) {
@@ -21,3 +22,9 @@ export function loadGenerator(project, generatorName) {
 	};
 }
 
+
+export function resetSelectedGenerator() {
+	return (dispatch) => {
+		dispatch({ type: RESET_GENERATOR });		
+	};
+}
