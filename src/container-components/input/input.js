@@ -21,22 +21,29 @@ class Input extends Component {
 		defaultValue: null
 	}
 
+	componentWillMount(){
+		this.props.onRef(this);
+	}
+
 	componentWillUnmount(){
 		ipcRenderer.removeListener('validate-prompt-result', this._handleValidateResult.bind(this));
 		ipcRenderer.removeListener('default-prompt-result', this._handleDefaultResult.bind(this));
 		ipcRenderer.removeListener('transform-prompt-result', this._handleTransformResult.bind(this));
+		this.props.onRef(null);
 	}
 	
 	
 	executeProcess(value) {
-		const { name, setAnswers } = this.props;
-		this.setState({ value });
-		setAnswers(name, value);
+		console.log('Executing Process in Child')
+		return 'Hamza'
+		// const { name, onGenerateClick } = this.props;
+		// this.setState({ value });
+		// setAnswers(name, value);
 	}
 
 	onTextChange(event){
 		let value = event.target.value;
-		this.executeProcess(value);
+		this.setState({ value });
 	}
 
 	onBlur(event){

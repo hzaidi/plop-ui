@@ -45,22 +45,24 @@ class Prompts extends Component {
 	}
 
 	setAnswers(promptName, value){
-		this.setState({
-			hashMap: this.state.hashMap.set(promptName, value)
-		})
+		// this.setState({
+		// 	hashMap: this.state.hashMap.set(promptName, value)
+		// })
 	}
 	onGenerateButtonClick() {
-		const { projectsState, generatorsState } = this.props;
-		const { selectedProject } = projectsState;
-		const { generator } = generatorsState;
+		var tt = this.child.executeProcess();
+		console.log(tt)
+		// const { projectsState, generatorsState } = this.props;
+		// const { selectedProject } = projectsState;
+		// const { generator } = generatorsState;
 
-		let answers = {};
-		for (var [key, value] of this.state.hashMap) {  answers[key] = value  };
+		// let answers = {};
+		// for (var [key, value] of this.state.hashMap) {  answers[key] = value  };
 
-		ipcRenderer.send('run-plop', { project: selectedProject, generatorName: generator.name, answers });
-		ipcRenderer.on('run-plop-success', (event, data) => {
-			console.log(data)
-		});
+		// ipcRenderer.send('run-plop', { project: selectedProject, generatorName: generator.name, answers });
+		// ipcRenderer.on('run-plop-success', (event, data) => {
+		// 	console.log(data)
+		// });
 
 	}
 
@@ -92,7 +94,7 @@ class Prompts extends Component {
 							{
 								generator.prompts.map((prompt, index) => {
 									const ComponentToRender = this.selectComponent(prompt);
-									return <div className={ classes.promptItem } key={ index }><ComponentToRender {...prompt} setAnswers={ this.setAnswers.bind(this) }/></div>
+									return <div className={ classes.promptItem } key={ index }><ComponentToRender {...prompt} onRef={ ref => (this.child = ref) }/></div>
 								})
 							}
 						</div>
