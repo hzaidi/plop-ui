@@ -21,10 +21,11 @@ class Input extends Component {
 		defaultValue: null
 	}
 
-	componentWillMount(){
+	componentDidMount(){
 		this.props.onRef(this);
+		this.transformer();
+		this.default();
 	}
-
 	componentWillUnmount(){
 		ipcRenderer.removeListener('validate-prompt-result', this._handleValidateResult.bind(this));
 		ipcRenderer.removeListener('default-prompt-result', this._handleDefaultResult.bind(this));
@@ -33,9 +34,18 @@ class Input extends Component {
 	}
 	
 	
-	executeProcess(value) {
-		console.log('Executing Process in Child')
-		return 'Hamza'
+	executeProcess() {
+		const { name } = this.props;
+		const resolvedValue = this.state.value || this.state.defaultValue;
+		return new Promise((resolve, reject) => {
+			this.validate(resolvedValue, () => {
+				let hasErrors = this.state.hasErrors;
+				if(!hasErrors) {
+					resolve({ name, value: resolvedValue });
+				}
+			});		
+		});
+		
 		// const { name, onGenerateClick } = this.props;
 		// this.setState({ value });
 		// setAnswers(name, value);
@@ -48,21 +58,21 @@ class Input extends Component {
 
 	onBlur(event){
 		const value = event.target.value;
-		this.validate(value);
-		this.transformer();
-		this.default();
+		this.validate(value);		
 	}
 
-	validate(value){
+	validate(value, cb = () => {}){
 		const { projectsState, generatorsState, name } = this.props;
 		const { selectedProject } = projectsState;
-		const { generator } = generatorsState;		
-		ipcRenderer.send('validate-prompt', { project: selectedProject, generatorName: generator.name, promptName: name, value });
-		ipcRenderer.on('validate-prompt-result', this._handleValidateResult.bind(this));
+		const { generator } = generatorsState;	
+		if(value){	
+			ipcRenderer.send('validate-prompt', { project: selectedProject, generatorName: generator.name, promptName: name, value });
+			ipcRenderer.on('validate-prompt-result', (event, data) => { this._handleValidateResult(event, data, cb) });
+		}
 	}
-	_handleValidateResult(event, data){
+	_handleValidateResult(event, data, cb = () => {}){
 		const hasErrors = typeof(data) !== "boolean";
-		this.setState({ hasErrors, errorMessage: hasErrors ? data : '' })
+		this.setState({ hasErrors, errorMessage: hasErrors ? data : '' }, cb);
 	}
 
 

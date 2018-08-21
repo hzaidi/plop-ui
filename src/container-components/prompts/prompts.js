@@ -31,10 +31,8 @@ const styles = theme => ({
 });
 
 class Prompts extends Component {
-	state = {
-		hashMap: new Map()
-	}
-
+	childrens = [];
+	
 	selectComponent(prompt) {
 		switch (prompt.type) {
 			case 'input':
@@ -44,26 +42,19 @@ class Prompts extends Component {
 		}
 	}
 
-	setAnswers(promptName, value){
-		// this.setState({
-		// 	hashMap: this.state.hashMap.set(promptName, value)
-		// })
-	}
 	onGenerateButtonClick() {
-		var tt = this.child.executeProcess();
-		console.log(tt)
-		// const { projectsState, generatorsState } = this.props;
-		// const { selectedProject } = projectsState;
-		// const { generator } = generatorsState;
-
-		// let answers = {};
-		// for (var [key, value] of this.state.hashMap) {  answers[key] = value  };
-
-		// ipcRenderer.send('run-plop', { project: selectedProject, generatorName: generator.name, answers });
-		// ipcRenderer.on('run-plop-success', (event, data) => {
-		// 	console.log(data)
-		// });
-
+		const { projectsState, generatorsState } = this.props;
+		const { selectedProject } = projectsState;
+		const { generator } = generatorsState;
+		let promises = Promise.all(this.childrens.map(child => child.executeProcess()));
+		promises.then(resolved => {			
+			let answers = {};
+			resolved.forEach(({ name, value }) => answers[name] = value);			
+			ipcRenderer.send('run-plop', { project: selectedProject, generatorName: generator.name, answers });
+			ipcRenderer.on('run-plop-success', (event, data) => {
+				console.log(data)
+			});
+		});
 	}
 
 	goToGenratorList(){
@@ -94,7 +85,7 @@ class Prompts extends Component {
 							{
 								generator.prompts.map((prompt, index) => {
 									const ComponentToRender = this.selectComponent(prompt);
-									return <div className={ classes.promptItem } key={ index }><ComponentToRender {...prompt} onRef={ ref => (this.child = ref) }/></div>
+									return <div className={ classes.promptItem } key={ index }><ComponentToRender {...prompt} onRef={ ref => (this.childrens.push(ref)) }/></div>
 								})
 							}
 						</div>
