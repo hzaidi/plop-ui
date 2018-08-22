@@ -10,7 +10,7 @@ import MainLayout from './container-components/main-layout/main-layout';
 const theme = createMuiTheme({
 	palette: {
 		primary: {
-		  main: '#1b5e20',
+		  main: '#044d59',
 		},
 		secondary: {
 		  main: '#26a69a',

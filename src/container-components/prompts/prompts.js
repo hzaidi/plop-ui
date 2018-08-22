@@ -6,8 +6,9 @@ import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import NavigateBefore from '@material-ui/icons/NavigateBefore';
 
-import { loadGenerator, resetSelectedGenerator } from '../../actions/generators';
+import { loadGenerator, resetSelectedGenerator, generate } from '../../actions/generators';
 import Input from '../input/input'
+
 
 const { ipcRenderer } = window.require('electron');
 const styles = theme => ({
@@ -43,17 +44,14 @@ class Prompts extends Component {
 	}
 
 	onGenerateButtonClick() {
-		const { projectsState, generatorsState } = this.props;
+		const { projectsState, generatorsState, generate } = this.props;
 		const { selectedProject } = projectsState;
 		const { generator } = generatorsState;
 		let promises = Promise.all(this.childrens.map(child => child.executeProcess()));
 		promises.then(resolved => {			
 			let answers = {};
-			resolved.forEach(({ name, value }) => answers[name] = value);			
-			ipcRenderer.send('run-plop', { project: selectedProject, generatorName: generator.name, answers });
-			ipcRenderer.on('run-plop-success', (event, data) => {
-				console.log(data)
-			});
+			resolved.forEach(({ name, value }) => answers[name] = value);
+			generate(selectedProject, generator.name, answers);
 		});
 	}
 
@@ -65,7 +63,7 @@ class Prompts extends Component {
 
   	render() {
 		const { generatorsState, classes } = this.props;
-		const { generator } = generatorsState;
+		const { generator, outcome } = generatorsState;
 		return (
 			<div className={ classes.container }>
 				<div>
@@ -96,6 +94,7 @@ class Prompts extends Component {
 						</div>
 					</div>
 				}
+				
 			</div>
 		);
   	}
@@ -110,7 +109,8 @@ const mapStateToProps = (state, props) => {
 }
 const mapActionsToProp = {
 	loadGenerator,
-	resetSelectedGenerator
+	resetSelectedGenerator,
+	generate
 }
 
 export default compose(

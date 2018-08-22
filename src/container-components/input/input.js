@@ -13,6 +13,9 @@ const styles = theme => ({
 });
 
 class Input extends Component {
+	transformListener = null;
+	defaultListener = null;
+	validateListener = null;
 	state = {
 		value: '',
 		hasErrors: false,
@@ -27,9 +30,9 @@ class Input extends Component {
 		this.default();
 	}
 	componentWillUnmount(){
-		ipcRenderer.removeListener('validate-prompt-result', this._handleValidateResult.bind(this));
-		ipcRenderer.removeListener('default-prompt-result', this._handleDefaultResult.bind(this));
-		ipcRenderer.removeListener('transform-prompt-result', this._handleTransformResult.bind(this));
+		ipcRenderer.removeAllListeners('validate-prompt-result');
+		ipcRenderer.removeAllListeners('default-prompt-result');
+		ipcRenderer.removeAllListeners('transform-prompt-result');				
 		this.props.onRef(null);
 	}
 	
@@ -44,11 +47,7 @@ class Input extends Component {
 					resolve({ name, value: resolvedValue });
 				}
 			});		
-		});
-		
-		// const { name, onGenerateClick } = this.props;
-		// this.setState({ value });
-		// setAnswers(name, value);
+		});		
 	}
 
 	onTextChange(event){
@@ -67,7 +66,7 @@ class Input extends Component {
 		const { generator } = generatorsState;	
 		if(value){	
 			ipcRenderer.send('validate-prompt', { project: selectedProject, generatorName: generator.name, promptName: name, value });
-			ipcRenderer.on('validate-prompt-result', (event, data) => { this._handleValidateResult(event, data, cb) });
+			this.validateListener =	ipcRenderer.on('validate-prompt-result', (event, data) => { this._handleValidateResult(event, data, cb) });
 		}
 	}
 	_handleValidateResult(event, data, cb = () => {}){
@@ -81,7 +80,7 @@ class Input extends Component {
 		const { selectedProject } = projectsState;
 		const { generator } = generatorsState;		
 		ipcRenderer.send('default-prompt', { project: selectedProject, generatorName: generator.name, promptName: name });
-		ipcRenderer.on('default-prompt-result', this._handleDefaultResult.bind(this));
+		this.defaultListener = ipcRenderer.on('default-prompt-result', this._handleDefaultResult.bind(this));
 	}
 	_handleDefaultResult(event, data){
 		this.setState({ defaultValue: data });
@@ -92,7 +91,7 @@ class Input extends Component {
 		const { selectedProject } = projectsState;
 		const { generator } = generatorsState;		
 		ipcRenderer.send('transform-prompt', { project: selectedProject, generatorName: generator.name, promptName: name });
-		ipcRenderer.on('transform-prompt-result', this._handleTransformResult.bind(this));
+		this.transformListener = ipcRenderer.on('transform-prompt-result', this._handleTransformResult.bind(this));
 	}
 	_handleTransformResult(event,data){
 		this.setState({ transformedValue: data });

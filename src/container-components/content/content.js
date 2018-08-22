@@ -7,6 +7,7 @@ import { loadGenerators, loadGenerator } from '../../actions/generators';
 import ProjectHeader from '../../presentation-components/project-header/project-header';
 import GeneratorList from '../../presentation-components/generator-list/generator-list';
 import Prompts from '../../container-components/prompts/prompts';
+import Outcome from '../../presentation-components/outcome/outcome';
 
 const styles = theme => ({
 
@@ -26,12 +27,13 @@ class Content extends Component {
   	render() {		
 		const { projectsState, generatorsState } = this.props;
 		const { selectedProject } = projectsState;
-		const { generators, generator } = generatorsState;
+		const { generators, generator, outcome } = generatorsState;
 		return (
 			<div>
 				<ProjectHeader project={ selectedProject }/>
-				{ !generator && generators && <GeneratorList generators={ generators } onGeneratorClick={ this.onGeneratorClick.bind(this) }/> }
+				{ ! outcome && !generator && generators && <GeneratorList generators={ generators } onGeneratorClick={ this.onGeneratorClick.bind(this) }/> }
 				{ generator && <Prompts /> }
+				{ outcome && <Outcome outcome={ outcome }/> }
 			</div>
 		);
   	}

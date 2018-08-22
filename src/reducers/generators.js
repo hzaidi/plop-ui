@@ -1,12 +1,14 @@
 import {
 	LOAD_GENERATORS,
 	LOAD_GENERATOR,
-	RESET_GENERATOR
+	RESET_GENERATOR,
+	PLOP_FILES
 } from '../actions/generators'
 
 const initialState = {
 	generators: [],
-	generator: null
+	generator: null,
+	outcome: null
 }
 
 export default function(state = initialState, { type, payload }) {
@@ -16,7 +18,9 @@ export default function(state = initialState, { type, payload }) {
 		case LOAD_GENERATOR:
 			return { ...state, generator: payload };
 		case RESET_GENERATOR:
-			return { ...state, generator: null };
+			return { ...state, generator: null, outcome: null };
+		case PLOP_FILES:
+			return { ...state, outcome: payload, generator: null }
 		default:
 			return state;
 	}
