@@ -10,7 +10,6 @@ import { loadGenerator, resetSelectedGenerator, generate } from '../../actions/g
 import Input from '../input/input'
 
 
-const { ipcRenderer } = window.require('electron');
 const styles = theme => ({
 	container:{
 		padding: 30,
@@ -63,7 +62,7 @@ class Prompts extends Component {
 
   	render() {
 		const { generatorsState, classes } = this.props;
-		const { generator, outcome } = generatorsState;
+		const { generator } = generatorsState;
 		return (
 			<div className={ classes.container }>
 				<div>
