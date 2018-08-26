@@ -93,6 +93,8 @@ ipcMain.on('add-project', (event, arg) =>  {
 
 ipcMain.on('load-projects', (event, arg) =>  {
 	const key = 'projects';
+	const dataPath = storage.getDataPath();
+	console.log(dataPath);
 	co(function *(){
 		let hasKey = yield inspectKey(key);
 		let result = hasKey ? yield get(key) : [];

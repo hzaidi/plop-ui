@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
-import NavigateBefore from '@material-ui/icons/NavigateBefore';
+
 
 import { loadGenerator, resetSelectedGenerator, generate } from '../../actions/generators';
 import Input from '../input/input'
@@ -12,21 +12,7 @@ import Input from '../input/input'
 
 const styles = theme => ({
 	container:{
-		padding: 30,
-		position: 'relative'
-	},
-	backButton:{
-		position: 'absolute',
-		right: 30
-	},
-	leftIcon: {
-		marginRight: theme.spacing.unit,
-	},
-	rightIcon: {
-		marginLeft: theme.spacing.unit,
-	},
-	iconSmall: {
-		fontSize: 20,
+		padding: 30
 	}
 });
 
@@ -54,23 +40,11 @@ class Prompts extends Component {
 		});
 	}
 
-	goToGenratorList(){
-		const { resetSelectedGenerator } = this.props;
-		resetSelectedGenerator();
-	}
-
-
   	render() {
 		const { generatorsState, classes } = this.props;
 		const { generator } = generatorsState;
 		return (
 			<div className={ classes.container }>
-				<div>
-					<Button variant="contained" onClick={ this.goToGenratorList.bind(this) } size="small" className={ [classes.button, classes.backButton].join(' ')}>
-						<NavigateBefore className={[classes.leftIcon, classes.iconSmall].join(' ')} />
-						Back to Generators
-					</Button>
-				</div>
 				{
 					generator &&
 					<div className={ classes.promptContentContainer }>
