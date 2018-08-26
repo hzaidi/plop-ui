@@ -7,7 +7,8 @@ import Button from '@material-ui/core/Button';
 
 
 import { loadGenerator, resetSelectedGenerator, generate } from '../../actions/generators';
-import Input from '../input/input'
+import Input from '../input/input';
+import Confirm from '../confirm/confirm';
 
 
 const styles = theme => ({
@@ -23,6 +24,8 @@ class Prompts extends Component {
 		switch (prompt.type) {
 			case 'input':
 				return Input;
+			case 'confirm':
+				return Confirm;
 			default:
 				break;
 		}
