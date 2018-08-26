@@ -14,6 +14,13 @@ import Confirm from '../confirm/confirm';
 const styles = theme => ({
 	container:{
 		padding: 30
+	},
+	promptItem:{
+		backgroundColor: '#e2e2e2',
+		padding: 20,
+		margin: '10px 0',
+		borderRadius: 5,
+		border: '1px solid #c3c3c3'
 	}
 });
 
@@ -64,7 +71,7 @@ class Prompts extends Component {
 							}
 						</div>
 						<div>
-							<Button color="primary" className={classes.button} onClick={ this.onGenerateButtonClick.bind(this) }>
+							<Button  variant="contained" color="primary" className={classes.button} onClick={ this.onGenerateButtonClick.bind(this) }>
 								Generate File
 							</Button>
 						</div>

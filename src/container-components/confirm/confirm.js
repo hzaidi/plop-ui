@@ -4,20 +4,32 @@ import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Switch from '@material-ui/core/Switch';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
 
+import PromptMessage from '../../presentation-components/prompt-message/prompt-message';
 
 const styles = theme => ({
-
+	formControl: {
+		margin: theme.spacing.unit,
+		minWidth: 150,
+	},
+	selectEmpty: {
+		marginTop: theme.spacing.unit * 2,
+	}
 });
 
 class Confirm extends Component {
 	state = {
-		checkedA: true,
-		checkedB: true,
+		confirmValue: '',
 		defaultValue: null
 	};
+
+	componentDidMount(){
+		this.props.onRef(this);
+	}
 
 	componentWillMount(){	
 		const defaultValue = this.props.default;
@@ -25,44 +37,51 @@ class Confirm extends Component {
 			this.setState({ defaultValue });
 		}
 	}
-	
-	handleChange = name => event => {
-		this.setState({ [name]: event.target.checked });
-	};
-	executeProcess() {
 
+	componentWillUnmount(){
+		this.props.onRef(null);
+	}
+	
+	handleChange = event => {
+		this.setState({ [event.target.name]: event.target.value });
+	};
+	executeProcess() {		
+		const { name } = this.props;
+		const resolvedValue = this.state.confirmValue.length ? this.state.confirmValue === 'Yes' : this.state.defaultValue;		
+		return new Promise((resolve, reject) => {
+			resolve({ name, value: resolvedValue });
+		});		
 	}	
   	render() {
-		const { message }= this.props;
-		debugger;
+		const { message, classes }= this.props;
 		return (			
 			<div>
 				{
-					this.state.defaultValue && 
+					this.state.defaultValue !== null && 
 					<div>
 						<Typography variant="subheading" component="span" color="default" noWrap>
-							Default Value: { this.state.defaultValue }
+							Default Value: { this.state.defaultValue ? 'Yes' : 'No' }
 						</Typography>					
 					</div>
 				}
-				{
-					<div>
-						<Typography variant="subheading" color="default" noWrap>
-							{ message }
-						</Typography>					
-					</div>
-				}
-				<FormControlLabel
-					control={
-						<Switch
-							checked={this.state.checkedB}
-							onChange={this.handleChange('checkedB')}
-							value="checkedB"
-							color="primary"
-						/>
-					}
-				label="Primary"
-				/>
+				<PromptMessage message={ message } />
+				<FormControl className={classes.formControl}>
+					<InputLabel htmlFor="confirm-value-simple">Select option</InputLabel>
+					<Select
+						value={this.state.confirmValue}
+						onChange={this.handleChange}
+						inputProps={{
+						name: 'confirmValue',
+						id: 'confirm-value-simple',
+						}}
+					>
+						<MenuItem value={ null }>
+							<em>None</em>
+						</MenuItem>
+						<MenuItem value="Yes">Yes</MenuItem>
+						<MenuItem value="No">No</MenuItem>						
+					</Select>
+				</FormControl>
 			</div>
 		);
   	}

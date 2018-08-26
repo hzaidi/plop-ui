@@ -4,11 +4,12 @@ import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
+import PromptMessage from '../../presentation-components/prompt-message/prompt-message';
 
 const { ipcRenderer } = window.require('electron');
 const styles = theme => ({
 	container:{
-		marginTop: 30
+		
 	}
 });
 
@@ -118,6 +119,7 @@ class Input extends Component {
 						</Typography>					
 					</div>
 				}
+				<PromptMessage message={ message } />
 				<TextField
 					error= { this.state.hasErrors }
 					fullWidth={ true }
