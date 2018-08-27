@@ -8,6 +8,7 @@ import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
+import FormHelperText from '@material-ui/core/FormHelperText';
 
 import PromptMessage from '../../presentation-components/prompt-message/prompt-message';
 
@@ -24,7 +25,8 @@ const styles = theme => ({
 class Confirm extends Component {
 	state = {
 		confirmValue: '',
-		defaultValue: null
+		defaultValue: '-1',
+		hasErrors: false
 	};
 
 	componentDidMount(){
@@ -41,15 +43,24 @@ class Confirm extends Component {
 	componentWillUnmount(){
 		this.props.onRef(null);
 	}
+
+	validate(value, cb = () => {}){
+		this.setState({ hasErrors: (value === '-1') }, cb)
+	}
 	
 	handleChange = event => {
 		this.setState({ [event.target.name]: event.target.value });
 	};
 	executeProcess() {		
 		const { name } = this.props;
-		const resolvedValue = this.state.confirmValue.length ? this.state.confirmValue === 'Yes' : this.state.defaultValue;		
+		const resolvedValue = this.state.confirmValue !== '-1' ? this.state.confirmValue === 'Yes' : this.state.defaultValue;		
 		return new Promise((resolve, reject) => {
-			resolve({ name, value: resolvedValue });
+			this.validate(resolvedValue, () => {
+				let hasErrors = this.state.hasErrors;
+				if(!hasErrors) {
+					resolve({ name, value: resolvedValue });
+				}
+			});
 		});		
 	}	
   	render() {
@@ -68,6 +79,7 @@ class Confirm extends Component {
 				<FormControl className={classes.formControl}>
 					<InputLabel htmlFor="confirm-value-simple">Select option</InputLabel>
 					<Select
+						error={ this.state.hasErrors }
 						value={this.state.confirmValue}
 						onChange={this.handleChange}
 						inputProps={{
@@ -75,12 +87,13 @@ class Confirm extends Component {
 						id: 'confirm-value-simple',
 						}}
 					>
-						<MenuItem value={ null }>
+						<MenuItem value="-1">
 							<em>None</em>
 						</MenuItem>
 						<MenuItem value="Yes">Yes</MenuItem>
 						<MenuItem value="No">No</MenuItem>						
 					</Select>
+					<FormHelperText>It is required</FormHelperText>
 				</FormControl>
 			</div>
 		);

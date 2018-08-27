@@ -46,6 +46,7 @@ class Prompts extends Component {
 		promises.then(resolved => {			
 			let answers = {};
 			resolved.forEach(({ name, value }) => answers[name] = value);
+			//console.log(answers)
 			generate(selectedProject, generator.name, answers);
 		});
 	}
